@@ -1,0 +1,57 @@
+import axios from "axios";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+//import Form from 'react-bootstrap/Form';
+
+function Signup() {
+
+    const history =  useNavigate();
+
+    const [email , setEmail] = useState(""); 
+    const [password , setPassword] = useState(""); 
+
+    async function submit(e){
+        e.preventDefault();
+
+        try {
+            await axios.post("http://localhost:8000/signup",{
+                email, password
+            }).then((res)=>{
+                if(res.data == "exist"){
+                    alert("User already exist");
+                } 
+                else if(res.data == "notexist"){
+                    history("/home", {state:{id:email}})
+                } 
+            }).catch((e)=>{
+                alert("Wrong Details");
+                console.log(e)
+            })
+        } 
+        catch (e) {
+            console.log(e)
+        }
+    }
+
+  return (
+    <div className="login"> 
+      <h1>Signup</h1>
+
+      <form action="POST">
+            <input type="email" onChange={(e)=>{setEmail(e.target.value)}}  placeholder="Enter your email" />
+
+            <input type="password" onChange={(e)=>{setPassword(e.target.value)}}  placeholder="Enter your password" />
+
+            <input type="submit" onSubmit={submit}/>
+      </form>
+
+      <br></br>
+      <p>OR</p>
+      <br></br>
+
+      <Link to="/">Login Page</Link>
+    </div>
+  );
+}
+
+export default Signup;
